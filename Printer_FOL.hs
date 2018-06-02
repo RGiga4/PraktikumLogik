@@ -1,6 +1,7 @@
 -- Printing of formulas --
 -- After Harrison "Handbook ... "
---
+module Printer_FOL where
+
 import Data.String
 import Parsing_FOL
 import Text.PrettyPrint.HughesPJClass as PP
@@ -100,3 +101,14 @@ print_atom prec (R p args) =
         ----- print_fol_formula
 
 pprint = print_formula1 print_atom
+
+--------- Propositional Logic Printer
+data Prop =
+  P String
+  deriving (Show, Eq)
+
+pname (P s) = s
+
+print_propvar prec p = PP.text (pname p)
+
+print_prop_formula = print_formula1 print_propvar
