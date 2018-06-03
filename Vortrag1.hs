@@ -2,6 +2,8 @@ module Vortrag1 where
 
 import Data.List
 import Parsing_FOL
+import Printer_FOL
+import Text.PrettyPrint.HughesPJClass as PP
 
 test = parse_prop_formula "p /\\ q ==> q /\\ r"
 
@@ -17,7 +19,7 @@ taut2 = parse_prop_formula "(p \\/ q) /\\ ~(p /\\ q) ==> (~p <=> q)"
 
 taut3 = parse_prop_formula "(p /\\ true) <=> p"
 
--- Test wahrheitsbelegung
+-- Test wahrheitsbelegung
 tt (P "p") = True
 tt (P "q") = False
 tt (P "r") = True
@@ -38,8 +40,12 @@ parse_propvar _ = error "parse_propvar"
 parse_prop_formula :: String -> Formula Prop
 parse_prop_formula = make_parser (parse_formula parse_propvar)
 
-print_propvar :: Prop -> String
-print_propvar (P s) = show s
+------ Eingefügt von Philipp, zum Formel printen 
+--print_propvar :: Prop -> String
+--print_propvar (P s) = show s
+print_propvar prec p = PP.text (pname p)
+
+print_prop_formula = print_formula1 print_propvar
 
 mk_and :: Formula Prop -> Formula Prop -> Formula Prop
 mk_and p q = (And p q)
