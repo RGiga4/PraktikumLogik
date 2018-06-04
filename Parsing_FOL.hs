@@ -1,10 +1,10 @@
--- Parsing of formulas --
--- After Harrison "Handbook ... "
+-- Parsing of formulas --
+-- After Harrison "Handbook ... "
 module Parsing_FOL where
 
 import Data.String
 
--- Chapter 1.7 Lexing --
+-- Chapter 1.7 Lexing --
 space x = x `elem` " \t\n\r"
 
 punctuation x = x `elem` "()[]{},"
@@ -34,14 +34,14 @@ lexer inp
         (toktl, rest) = lexwhile prop cs
      in (c : toktl) : (lexer rest)
 
--- Chapter 1.7 Parsing --
+-- Chapter 1.7 Parsing --
 make_parser pfn s =
   let (expr, rest) = pfn (lexer s)
    in if rest == []
         then expr
         else error "Unparsed input"
 
--- Appendix 3 General parsing functions
+-- Appendix 3 General parsing functions
 parse_ginfix opsym opupdate sof subparser inp
   | (inp1 /= [] && head inp1 == opsym) =
     parse_ginfix opsym opupdate (opupdate sof e1) subparser (tail inp1)
@@ -67,14 +67,14 @@ parse_bracketed subparser cbra inp
   where
     (ast, rest) = subparser inp
 
--- Appendix 3 Parsing first-order terms --
+-- Appendix 3 Parsing first-order terms --
 is_const_name s = (all numeric s) || (s == [])
 
 data Term
   = Var String
   | Fn String
        [Term]
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 parse_atomic_term [] = error "term expected"
 parse_atomic_term ("(":rest) = parse_bracketed parse_term ")" rest
@@ -113,11 +113,11 @@ parse_term inp =
 
 parset = make_parser parse_term
 
--- Appendix 3 Parsing first-order formulas
+-- Appendix 3 Parsing first-order formulas
 data FOL =
   R String
     [Term]
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 data Formula a
   = Bottom
@@ -136,7 +136,7 @@ data Formula a
            (Formula a)
   | Exists String
            (Formula a)
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 parse_atom inp =
   let (tm, rest) = parse_term inp
