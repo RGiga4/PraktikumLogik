@@ -1,5 +1,7 @@
 ---- Chapter 2.8 
 --Implementation of definitional CNF
+module DefCnf where
+
 import DNF
 import qualified Data.Map as Map
 import qualified Data.Set as Set
@@ -26,14 +28,12 @@ import Vortrag1
 mkprop :: Int -> (Formula Prop, Int)
 mkprop n = (Atom (P ("p_" ++ (show n))), n + 1)
 
-type ToLong
+type Triple
    = (Formula Prop, Map.Map (Formula Prop) (Formula Prop, Formula Prop), Int)
 
 --Wir nehmen an, dass die Formel bereits in Negation Normalform ist.
 --Argumente: Formel | Funktion, die eine Formel aufteilt | Variablen Counter
-maincnf ::
-     (Formula Prop, Map.Map (Formula Prop) (Formula Prop, Formula Prop), Int)
-  -> (Formula Prop, Map.Map (Formula Prop) (Formula Prop, Formula Prop), Int)
+maincnf :: Triple -> Triple
 maincnf (trip@(fm, defs, n)) =
   case fm of
     And p q -> defstep And (p, q) trip
@@ -45,8 +45,8 @@ maincnf (trip@(fm, defs, n)) =
 defstep ::
      (Formula Prop -> Formula Prop -> Formula Prop)
   -> (Formula Prop, Formula Prop)
-  -> ToLong
-  -> ToLong
+  -> Triple
+  -> Triple
 defstep op (p, q) (fm, defs, n) =
   let (fm1, defs1, n1) = maincnf (p, defs, n) --rekursion
       (fm2, defs2, n2) = maincnf (q, defs1, n1)
@@ -74,8 +74,8 @@ max_varindex pfx s n =
                    then max n (read s')
                    else n
 
---mkDefcnf :: (toLong -> toLong) -> Formula -> [[Formula]]
 --zuerst vereinfachen wir fm und ziehen die Negationen in die Atome. Dann bestimmen wir den Startpunkt des Variablencounters n und wenden fn (maincnf) an.
+mk_defcnf :: (Triple -> Triple) -> Formula Prop -> [[Formula Prop]]
 mk_defcnf fn fm =
   let fm' = nenf fm
       n = 1 + overatoms (max_varindex "p_" . pname) fm' 0
@@ -84,25 +84,52 @@ mk_defcnf fn fm =
    in map Set.toList $
       Set.toList $ Set.unions (simpcnf fm'' : map simpcnf deflist)
 
--- Die doppelte Anwendung von Set.toList resultiert aus der Definition von simpcnf. Die originale Implementierung aus dem Harrison Buch würde eine ander simpcnf Funktion voraussetzen.
+-- muss fm'' noch umgeformt werden? ist das nicht einfach eine Variable?
+-- Die doppelte Anwendung von Set.toList resultiert aus der Definition von simpcnf. Die originale Implementierung aus dem Harrison Buch würde eine andere simpcnf Funktion voraussetzen.
 --
+defcnf1 :: (Formula Prop) -> (Formula Prop)
 defcnf1 fm = list_conj $ map list_disj $ mk_defcnf maincnf fm
 
+-- Formeln in dieser Normalform haben üblicherweise Redundanzen
+-- Diese zu eliminieren ist bestenfalls in O(n²) möglich.
+--
+------------ Optimierter Algorithmus
+subcnf ::
+     (Triple -> Triple)
+  -> (Formula Prop -> Formula Prop -> Formula Prop)
+  -> (Formula Prop, Formula Prop)
+  -> Triple
+  -> Triple
 subcnf sfn op (p, q) (fm, defs, n) =
   let (fm1, defs1, n1) = sfn (p, defs, n)
       (fm2, defs2, n2) = sfn (q, defs1, n1)
    in (op fm1 fm2, defs2, n2)
 
+-- subcnf iteriert orcnf und andcnf auf den Teilformeln.
+orcnf :: Triple -> Triple
 orcnf (trip@(fm, defs, n)) =
   case fm of
     Or p q -> subcnf orcnf Or (p, q) trip
     _ -> maincnf trip
 
+-- Das "Or" bleibt stehen, aber die Funktion wird auf den Teilformeln iteriert
+andcnf :: Triple -> Triple
 andcnf (trip@(fm, defs, n)) =
   case fm of
     And p q -> subcnf andcnf And (p, q) trip
     _ -> orcnf trip
 
+defcnfs :: Formula Prop -> [[Formula Prop]]
 defcnfs fm = mk_defcnf andcnf fm
 
+defcnf :: Formula Prop -> Formula Prop
 defcnf fm = list_conj (map list_disj (defcnfs fm))
+
+andcnf3 :: Triple -> Triple
+andcnf3 (trip@(fm, defs, n)) =
+  case fm of
+    And p q -> subcnf andcnf3 And (p, q) trip
+    _ -> maincnf trip
+
+defcnf3 :: Formula Prop -> Formula Prop
+defcnf3 fm = list_conj (map list_disj (mk_defcnf andcnf3 fm))
