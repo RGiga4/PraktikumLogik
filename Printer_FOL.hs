@@ -11,12 +11,12 @@ import Data.String
 import Parsing_FOL
 import Prelude hiding ((<>))
 import Text.PrettyPrint.HughesPJ ((<+>), (<>), hcat, text)
-                        -- forgets all quantifier, we need to flag them later.
-
 import qualified Text.PrettyPrint.HughesPJClass as PP
 
 ----------- FOL Printer Appendix 3
 -------- bracket function without openbox is pointless...
+--
+-- forgets all quantifier, we need to flag them later.
 strip_quant fm =
   case fm of
     Forall x (Forall y p) ->
