@@ -1,3 +1,7 @@
+-- flexibleInstances because of adding a show instance for Formula FOL.
+-- Ich habe keine Ahnung was für Auswirkungen diese Einstellung hat, bei PROBLEMEN einfach mal auskommentieren...
+{-# LANGUAGE FlexibleInstances #-}
+
 -- Printing of formulas --
 -- After Harrison "Handbook ... "
 module Printer_FOL
@@ -5,6 +9,8 @@ module Printer_FOL
   , print_formula
   , print_formula1
   , print_term
+  , print_prop_formula
+  , pname
   ) where
 
 import Data.String
@@ -109,9 +115,20 @@ print_atom prec (R p args) =
         ----- print_fol_formula
 
 pprint = print_formula1 print_atom
+
 --------- Propositional Logic Printer-- Ist in Vortrag 1 einfgefügt
---pname (P s) = s
 --
---print_propvar prec p = PP.text (pname p)
+pname :: Prop -> String
+pname (P s) = s
+
+print_propvar prec p = PP.text (pname p)
+
+print_prop_formula = print_formula1 print_propvar
+
 --
---print_prop_formula = print_formula1 print_propvar
+-- Show Instances
+instance Show (Formula FOL) where
+  show f = PP.render $ pprint f
+
+instance Show (Formula Prop) where
+  show p = PP.render $ print_prop_formula p
