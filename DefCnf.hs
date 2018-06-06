@@ -84,7 +84,7 @@ mk_defcnf fn fm =
    in map Set.toList $
       Set.toList $ Set.unions (simpcnf fm'' : map simpcnf deflist)
 
--- muss fm'' noch umgeformt werden? ist das nicht einfach eine Variable?
+-- für defcnf1 ist fm'' eine Variable und simpcnf mehr oder weniger überflüssig, für defcnf aber kann fm'' komplexer sein. 
 -- Die doppelte Anwendung von Set.toList resultiert aus der Definition von simpcnf. Die originale Implementierung aus dem Harrison Buch würde eine andere simpcnf Funktion voraussetzen.
 --
 defcnf1 :: (Formula Prop) -> (Formula Prop)
