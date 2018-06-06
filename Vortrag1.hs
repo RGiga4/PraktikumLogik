@@ -19,34 +19,13 @@ taut2 = parse_prop_formula "(p \\/ q) /\\ ~(p /\\ q) ==> (~p <=> q)"
 
 taut3 = parse_prop_formula "(p /\\ true) <=> p"
 
--- Test wahrheitsbelegung
+-- Test wahrheitsbelegung
 tt (P "p") = True
 tt (P "q") = False
 tt (P "r") = True
 tt _ = False
 
-data Prop =
-  P String
-  deriving (Show, Eq, Ord)
-
-pname :: Prop -> String
-pname (P s) = s
-
-parse_propvar :: [String] -> (Formula Prop, [String])
-parse_propvar (p:oinp)
-  | p /= "(" = (Atom (P p), oinp)
-parse_propvar _ = error "parse_propvar"
-
-parse_prop_formula :: String -> Formula Prop
-parse_prop_formula = make_parser (parse_formula parse_propvar)
-
------- Eingefügt von Philipp, zum Formel printen 
---print_propvar :: Prop -> String
---print_propvar (P s) = show s
-print_propvar prec p = PP.text (pname p)
-
-print_prop_formula = print_formula1 print_propvar
-
+-- Prop- Parser und Printer wurden in Parsing_FOL bzw Printer_FOL verschoben
 mk_and :: Formula Prop -> Formula Prop -> Formula Prop
 mk_and p q = (And p q)
 
