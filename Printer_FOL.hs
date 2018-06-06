@@ -1,11 +1,19 @@
 -- Printing of formulas --
 -- After Harrison "Handbook ... "
-module Printer_FOL where
+module Printer_FOL
+  ( pprint
+  , print_formula
+  , print_formula1
+  , print_term
+  ) where
 
 import Data.String
 import Parsing_FOL
-import Text.PrettyPrint.HughesPJClass as PP
+import Prelude hiding ((<>))
+import Text.PrettyPrint.HughesPJ ((<+>), (<>), hcat, text)
                         -- forgets all quantifier, we need to flag them later.
+
+import qualified Text.PrettyPrint.HughesPJClass as PP
 
 ----------- FOL Printer Appendix 3
 -------- bracket function without openbox is pointless...
