@@ -117,7 +117,7 @@ parset = make_parser parse_term
 data FOL =
   R String
     [Term]
-  deriving (Show, Eq, Ord)
+  deriving (Eq, Ord)
 
 data Formula a
   = Bottom
@@ -136,7 +136,7 @@ data Formula a
            (Formula a)
   | Exists String
            (Formula a)
-  deriving (Show, Eq, Ord)
+  deriving (Eq, Ord)
 
 parse_atom inp =
   let (tm, rest) = parse_term inp
@@ -193,3 +193,18 @@ parse_formula afn inp =
     inp
 
 parse = make_parser (parse_formula parse_atom)
+
+--
+-- Parser for Propositions
+-- This parser has been moved from Vortrag1.hs 
+data Prop =
+  P String
+  deriving (Eq, Ord)
+
+parse_propvar :: [String] -> (Formula Prop, [String])
+parse_propvar (p:oinp)
+  | p /= "(" = (Atom (P p), oinp)
+parse_propvar _ = error "parse_propvar"
+
+parse_prop_formula :: String -> Formula Prop
+parse_prop_formula = make_parser (parse_formula parse_propvar)
