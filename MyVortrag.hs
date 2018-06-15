@@ -6,6 +6,7 @@ module MyVortrag where
 --import NNF
 import Parsing_FOL
 import Printer_FOL
+import DefCnf
 --import Vortrag1
 
 termint a = (Fn a [])
@@ -32,3 +33,5 @@ t3 = groundtuples [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1 1
 t4 = groundterms [(Fn "0" [])] [("f", 1)] 10
 t5 = groundterms [(Fn "1" [])] [("add", 2)] 1
 t6 = groundterms [(Fn "0" [])] [("add", 2), ("succ", 1)] 3
+
+let snf = parse "D(x) ==> D(f_y(x))"
