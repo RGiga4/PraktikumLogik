@@ -11,6 +11,7 @@ module Printer_FOL
   , print_term
   , print_prop_formula
   , pname
+  , printert
   ) where
 
 import Data.String
@@ -132,3 +133,6 @@ instance Show (Formula FOL) where
 
 instance Show (Formula Prop) where
   show p = PP.render $ print_prop_formula p
+
+instance Show (Term) where
+  show t = PP.render $ printert t
