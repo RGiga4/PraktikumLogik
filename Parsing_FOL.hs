@@ -74,7 +74,7 @@ data Term
   = Var String
   | Fn String
        [Term]
-  deriving (Show, Eq, Ord)
+  deriving (Eq, Ord)
 
 parse_atomic_term [] = error "term expected"
 parse_atomic_term ("(":rest) = parse_bracketed parse_term ")" rest
