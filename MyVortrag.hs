@@ -36,10 +36,11 @@ t5 = groundterms [(Fn "1" [])] [("add", 2)] 1
 t6 = groundterms [(Fn "0" [])] [("add", 2), ("succ", 1)] 3
 
 snf = parse "D(x) ==> D(f_y(x))"
-t7 = herbloop snf (gilmore1 snf) [("D", 1), ("f_y", 1)] (fv snf) 0 [] []
-fm = parse "exists x. forall y. D(x) ==> D(y)"
 
-herbloop fm cntms funcs fvs n tried rest =
+fm = parse "exists x. forall y. D(x) ==> D(y)"
+t7 = gilmore fm
+
+herbloop fm cntms funcs fvs n fl tried rest =
 	let newtuples = groundtuples cntms funcs n (length fvs) in
 	newtuples
 
@@ -47,12 +48,12 @@ gilmore1 fm =
 	--let sfm = skolemize(Not(generalize fm)) in
 	let cntms = [(Fn "c" [])] in -- ++ [(Fn x []) | x<-fv fm] in
 	cntms
-gilmore fm funcs=
-	--let sfm = skolemize(Not(generalize fm)) in
-	let sfm = fm in
+gilmore fm =
+	let sfm = skolemize(Not(generalize fm)) in
+	let funcs = functions sfm in
 	let cntms = [(Fn "c" [])] in
-	[]
-	--herbloop (simpdnf sfm) cntms funcs fvs 0 [[]] [] []
+	let fvs = fv sfm in
+	herbloop (simpdnf sfm) cntms funcs fvs 0 [[]] [] []
 
 gilmore_loop fm = 
 	simpdnf fm
