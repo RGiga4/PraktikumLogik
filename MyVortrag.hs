@@ -41,8 +41,12 @@ fm = parse "exists x. forall y. D(x) ==> D(y)"
 t7 = gilmore fm
 
 herbloop fm cntms funcs fvs n fl tried rest =
-	let newtuples = groundtuples cntms funcs n (length fvs) in
-	newtuples
+	if null rest then
+		let newtuples = groundtuples cntms funcs n (length fvs) in
+		--herbloop fm cntms funcs fvs (n+1) fl tried newtuples
+		newtuples
+	else 
+		[]
 
 gilmore1 fm =
 	--let sfm = skolemize(Not(generalize fm)) in
