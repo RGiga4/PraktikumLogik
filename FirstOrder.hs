@@ -212,7 +212,7 @@ skolem fm fns=
 
 --askolmize überführt vor dem Skolemizieren in NNF--
 askolemize::Formula FOL->Formula FOL
-askolemize fm=fst(skolem (nnf(simplify fm)) (map fst (functions fm)))
+askolemize fm=fst(skolem (nnf2(simplify fm)) (map fst (functions fm)))
 
 --specialize entfernt Allquantoren am Anfang--
 specialize::Formula FOL->Formula FOL
