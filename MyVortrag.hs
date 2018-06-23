@@ -1,8 +1,8 @@
 module MyVortrag where
 
 import DNF
---import qualified Data.Map as Map
---import qualified Data.Set as Set
+import qualified Data.Map as Map
+import qualified Data.Set as Set
 --import NNF
 import Parsing_FOL
 import Printer_FOL
@@ -10,8 +10,9 @@ import DefCnf
 import Vortrag1
 import FirstOrder
 
-termint a = (Fn a [])
-
+tmp1::Formula FOL
+tmp1 = (Bottom)
+bot = simpdnf tmp1
 -- soll alle Terme mit n funktion geben
 
 groundterms cntms funcs n 
@@ -39,32 +40,41 @@ snf = parse "D(x) ==> D(f_y(x))"
 
 fm = parse "exists x. forall y. D(x) ==> D(y)"
 t7 = gilmore fm
+t8 = And snf fm
 
-herbloop fm cntms funcs fvs n fl tried rest =
+testfa fm = 
+	let x = simpdnf fm in
+	bot == x
+
+--mfn Modifzierte formel
+--tfn ? original formel
+herbloop mfn tfn cntms funcs fvs n fl tried rest =
 	if null rest then
 		let newtuples = groundtuples cntms funcs n (length fvs) in
-		--herbloop fm cntms funcs fvs (n+1) fl tried newtuples
-		newtuples
+		herbloop mfn tfn cntms funcs fvs (n+1) fl tried newtuples
+		
 	else 
-		[]
+		let tup = head rest in--hier was printen1111111111111111111
+		let tups = tail rest in
+		if(elem tup tried) then herbloop mfn tfn cntms funcs fvs n fl tried tups
+		else
+			let sub = Map.fromList (zip fvs tup) in
+			let fl' =  subst2 sub tfn in
+			if testfa (And mfn fl') then--(n>=3) then 
+				(tup:tried)
+			else
+				herbloop (And mfn fl') tfn cntms funcs fvs n fl (tup:tried) tups
 
-gilmore1 fm =
-	--let sfm = skolemize(Not(generalize fm)) in
-	let cntms = [(Fn "c" [])] in -- ++ [(Fn x []) | x<-fv fm] in
-	cntms
+
+
 gilmore fm =
 	let sfm = skolemize(Not(generalize fm)) in
 	let funcs = functions sfm in
 	let cntms = [(Fn "c" [])] in
 	let fvs = fv sfm in
-	herbloop (simpdnf sfm) cntms funcs fvs 0 [[]] [] []
+	herbloop (Top) (sfm) cntms funcs fvs 0 [[]] [] [] --smipdnf einarbeiten
 
 gilmore_loop fm = 
 	simpdnf fm
---herbloop 
 
---gilmore_loop fm =
-	--herbloop fm
-
---
 
