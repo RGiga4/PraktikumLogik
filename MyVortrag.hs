@@ -50,11 +50,11 @@ testfa fm =
 --tfn ? original formel
 herbloop mfn tfn cntms funcs fvs n fl tried rest =
 	if null rest then
-		let newtuples = groundtuples cntms funcs n (length fvs) in
+		let newtuples = groundtuples cntms funcs n (length fvs) in--hier was printen1111111111111111111
 		herbloop mfn tfn cntms funcs fvs (n+1) fl tried newtuples
 		
 	else 
-		let tup = head rest in--hier was printen1111111111111111111
+		let tup = head rest in
 		let tups = tail rest in
 		if(elem tup tried) then herbloop mfn tfn cntms funcs fvs n fl tried tups
 		else
