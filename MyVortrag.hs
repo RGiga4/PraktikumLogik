@@ -9,6 +9,7 @@ import Printer_FOL
 import DefCnf
 import Vortrag1
 import FirstOrder
+import Debug.Trace
 
 tmp1::Formula FOL
 tmp1 = (Bottom)
@@ -45,12 +46,13 @@ t8 = And snf fm
 testfa fm = 
 	let x = simpdnf fm in
 	bot == x
+porree x = do putStrLn (show (x)++" ground instances tried,")
 
 --mfn Modifzierte formel
 --tfn ? original formel
 herbloop mfn tfn cntms funcs fvs n fl tried rest =
 	if null rest then
-		let newtuples = groundtuples cntms funcs n (length fvs) in--hier was printen1111111111111111111
+		let newtuples = groundtuples cntms funcs n (length fvs) in
 		herbloop mfn tfn cntms funcs fvs (n+1) fl tried newtuples
 		
 	else 
@@ -77,4 +79,7 @@ gilmore fm =
 gilmore_loop fm = 
 	simpdnf fm
 
+p45 = parse "(forall x. P(x) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y)) ==> (forall y. G(y) /\\ H(x,y) ==> R(y))) /\\ ~(exists y. L(y) /\\ R(y)) /\\ (exists x. P(x) /\\ (forall y. H(x,y) ==> L(y)) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y))) ==> (exists x. P(x) /\\ ~(exists y. G(y) /\\ H(x,y)))" 
+
+main = show(p45)
 
