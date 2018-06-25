@@ -30,22 +30,12 @@ groundtuples cntms funcs n m =
 
 
 
-t1 = groundterms [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1
-t2 = groundtuples [(Fn "0" []), (Fn "1" [])] [("f", 1)] 0 1
-t3 = groundtuples [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1 1
-t4 = groundterms [(Fn "0" [])] [("f", 1)] 10
-t5 = groundterms [(Fn "1" [])] [("add", 2)] 1
-t6 = groundterms [(Fn "0" [])] [("add", 2), ("succ", 1)] 3
 
-snf = parse "D(x) ==> D(f_y(x))"
-
-fm = parse "exists x. forall y. D(x) ==> D(y)"
-t7 = gilmore fm
-t8 = And snf fm
 
 testfa fm = 
 	let x = simpdnf fm in
 	bot == x
+
 porree x = do putStrLn (show (x)++" ground instances tried,")
 
 --mfn Modifzierte formel
@@ -74,12 +64,25 @@ gilmore fm =
 	let funcs = functions sfm in
 	let cntms = [(Fn "c" [])] in
 	let fvs = fv sfm in
-	herbloop (Top) (sfm) cntms funcs fvs 0 [[]] [] [] --smipdnf einarbeiten
+	herbloop (Top) (sfm) cntms funcs fvs 0 [[]] [] [] 
 
 gilmore_loop fm = 
 	simpdnf fm
 
 p45 = parse "(forall x. P(x) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y)) ==> (forall y. G(y) /\\ H(x,y) ==> R(y))) /\\ ~(exists y. L(y) /\\ R(y)) /\\ (exists x. P(x) /\\ (forall y. H(x,y) ==> L(y)) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y))) ==> (exists x. P(x) /\\ ~(exists y. G(y) /\\ H(x,y)))" 
 
-main = show(p45)
+
+t1 = groundterms [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1
+t2 = groundtuples [(Fn "0" []), (Fn "1" [])] [("f", 1)] 0 1
+t3 = groundtuples [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1 1
+t4 = groundterms [(Fn "0" [])] [("s", 1)] 10
+t5 = groundterms [(Fn "1" [])] [("add", 2)] 1
+t6 = groundterms [(Fn "0" [])] [("add", 2), ("succ", 1)] 3
+
+
+
+drink = parse "exists x. forall y. D(x) ==> D(y)"
+t7 = gilmore drink
+
+--main = show(p45)
 
