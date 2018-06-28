@@ -69,7 +69,8 @@ gilmore fm =
 gilmore_loop fm = 
 	simpdnf fm
 
-p45 = parse "(forall x. P(x) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y)) ==> (forall y. G(y) /\\ H(x,y) ==> R(y))) /\\ ~(exists y. L(y) /\\ R(y)) /\\ (exists x. P(x) /\\ (forall y. H(x,y) ==> L(y)) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y))) ==> (exists x. P(x) /\\ ~(exists y. G(y) /\\ H(x,y)))" 
+p45 = parse "(forall x. P(x) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y)) ==> (forall y. G(y) /\\ H(x,y) ==> R(y))) /\\ ~(exists y. L(y) /\\ R(y)) /\\ (exists x. P(x) /\\ (forall y. H(x,y) ==> L(y)) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y))) ==> (exists x. P(x) /\\ ~(exists y. G(y) /\\ H(x,y)))"
+p24 = parse "~(exists x. U(x) /\\ Q(x)) /\\ (forall x. P(x) ==> Q(x) \\/ R(x)) /\\ ~(exists x. P(x) ==> (exists x. Q(x))) /\\ (forall x. Q(x) /\\ R(x) ==> U(x)) ==> (exists x. P(x) /\\ R(x))"
 
 
 t1 = groundterms [(Fn "0" []), (Fn "1" [])] [("f", 1)] 1
