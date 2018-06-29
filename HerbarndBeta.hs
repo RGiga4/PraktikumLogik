@@ -3,7 +3,7 @@ module MyVortrag where
 import DNF
 import qualified Data.Map as Map
 import qualified Data.Set as Set
---import NNF
+import DP
 import Parsing_FOL
 import Printer_FOL
 import DefCnf
@@ -137,6 +137,19 @@ d2 = simpcnf $ parse "~D(c())"
 
 d3 = cnfAnd d1 d2
 d4 = simpcnf $ parse "D(c()) /\\ ~D(c())"
+d5 = head $ Set.toList $ head $ Set.toList d4
+d6 = head $ Set.toList $ last $ Set.toList d4
+
+-- to cnf fur DL
+doge cnf = 
+	let x = Set.toList cnf in
+	[[ toProp c | c <- Set.toList y] | y <- x]
+
+toProp::Formula FOL->Formula Prop
+toProp fm = 
+	case fm of
+		Atom a -> Atom (P $ show(fm))
+		Not f -> Not $ Atom (P $ show(f))
 
 --main = show(p45)
 
