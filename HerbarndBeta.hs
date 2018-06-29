@@ -9,8 +9,7 @@ import Printer_FOL
 import DefCnf
 import Vortrag1
 import FirstOrder
-import Debug.Trace
---import Data.Set.Monad
+
 
 tmp1::Formula FOL
 tmp1 = (Bottom)
@@ -46,7 +45,7 @@ testfb dnf =
 	
 	bot == dnf
 tfncnf cnf = 
-	bot2 == cnf
+	dp $ doge cnf
 simpdnfinj fm = 
            let djs = Set.filter DNF.nontrivial fm
                nonsuperset s = Set.null $ Set.filter (flip Set.isProperSubsetOf s) djs
@@ -81,6 +80,7 @@ herbloopdnf mfn tfn fl0 cntms funcs fvs n fl tried rest =
 			else
 				herbloopdnf mfn tfn fl0 cntms funcs fvs n (dnfAnd fl fl') (tup:tried) tups
 
+-- Vorsicht die sind unterschiedlich
 herbloopcnf mfn tfn fl0 cntms funcs fvs n fl tried rest =
 	if null rest then
 		let newtuples = groundtuples cntms funcs n (length fvs) in
@@ -93,7 +93,7 @@ herbloopcnf mfn tfn fl0 cntms funcs fvs n fl tried rest =
 		else
 			let sub = Map.fromList (zip fvs tup) in
 			let fl' = simpcnf (subst2 sub fl0) in
-			if tfncnf (cnfAnd fl fl') then--(n>=3) then 
+			if not $ tfncnf (cnfAnd fl fl') then--(n>=3) then 
 				(tup:tried)
 			else
 				herbloopcnf mfn tfn fl0 cntms funcs fvs n (cnfAnd fl fl') (tup:tried) tups
@@ -113,7 +113,9 @@ gilmorecnf fm =
 	let fvs = fv sfm in
 	herbloopcnf (Top) [] (sfm) cntms funcs fvs 0 (top2) [] [] 
 
-
+--p45 mittle schlimm 
+--p24 einfach
+--p20 speicher schlimm
 p45 = parse "(forall x. P(x) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y)) ==> (forall y. G(y) /\\ H(x,y) ==> R(y))) /\\ ~(exists y. L(y) /\\ R(y)) /\\ (exists x. P(x) /\\ (forall y. H(x,y) ==> L(y)) /\\ (forall y. G(y) /\\ H(x,y) ==> J(x,y))) ==> (exists x. P(x) /\\ ~(exists y. G(y) /\\ H(x,y)))"
 p24 = parse "~(exists x. U(x) /\\ Q(x)) /\\ (forall x. P(x) ==> Q(x) \\/ R(x)) /\\ ~(exists x. P(x) ==> (exists x. Q(x))) /\\ (forall x. Q(x) /\\ R(x) ==> U(x)) ==> (exists x. P(x) /\\ R(x))"
 p20 = parse "(forall x y. exists z. forall w. P(x) /\\ Q(y) ==> R(z) /\\ U(w)) ==> (exists x y. P(x) /\\ Q(y)) ==> (exists z. R(z))"
@@ -143,7 +145,7 @@ d6 = head $ Set.toList $ last $ Set.toList d4
 -- to cnf fur DL
 doge cnf = 
 	let x = Set.toList cnf in
-	[[ toProp c | c <- Set.toList y] | y <- x]
+	[[ c | c <- Set.toList y] | y <- x]
 
 toProp::Formula FOL->Formula Prop
 toProp fm = 
