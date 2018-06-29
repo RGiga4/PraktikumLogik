@@ -1,4 +1,4 @@
-module DavisPutnam where
+module DP where --DavisPutnam where
 
 import qualified Data.Map as Map
 import Data.List
